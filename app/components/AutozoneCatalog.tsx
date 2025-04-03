@@ -23,7 +23,7 @@ export default function AutozoneCatalog() {
     setError(null);
 
     try {
-      const response = await fetch('http://localhost:3001/api/cross-site-auth', {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_AUTOZONE_API_URL}/api/cross-site-auth`, {
         method: 'POST', 
         headers: {
           'Content-Type': 'application/json',
