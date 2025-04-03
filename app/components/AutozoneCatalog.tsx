@@ -144,7 +144,7 @@ export default function AutozoneCatalog() {
                 </button>
               </div>
               <iframe
-                src="http://localhost:3001/"
+                src={process.env.NEXT_PUBLIC_AUTOZONE_API_URL}
                 className="w-full h-[calc(100%-4rem)] border-0"
                 title="Autozone Catalog"
               />
