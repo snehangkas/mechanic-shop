@@ -8,6 +8,17 @@ interface LoginCredentials {
   accountId?: string;
 }
 
+interface Product {
+  imageUrl?: string;
+  name?: string;
+}
+
+interface CartItem {
+  product?: Product;
+  quantity: number;
+  fulfillmentMethod: string;
+}
+
 export default function AutozoneCatalog() {
   const [showIframe, setShowIframe] = useState(false);
   const [credentials, setCredentials] = useState<LoginCredentials>({
@@ -17,7 +28,7 @@ export default function AutozoneCatalog() {
   });
   const [error, setError] = useState<string | null>(null);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [cartItems, setCartItems] = useState<any[]>([]);
+  const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [showCart, setShowCart] = useState(false);
 
   useEffect(() => {
