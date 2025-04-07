@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 interface LoginCredentials {
   email: string;
@@ -17,6 +17,28 @@ export default function AutozoneCatalog() {
   });
   const [error, setError] = useState<string | null>(null);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [cartItems, setCartItems] = useState<any[]>([]);
+  const [showCart, setShowCart] = useState(false);
+
+  useEffect(() => {
+    // Add message event listener
+    const handleMessage = (event: MessageEvent) => {
+         
+      if (event.data.type === 'PUNCH_OUT' && event.data.cartItems) {
+        console.log('Cart items:', event.data.cartItems);
+        setCartItems(event.data.cartItems);
+        setShowCart(true);
+        setShowIframe(false);
+      } else if (event.data.type === 'CLOSE_IFRAME') {
+        setShowIframe(false);
+      }
+    };
+
+    window.addEventListener('message', handleMessage);
+    return () => {
+      window.removeEventListener('message', handleMessage);
+    };
+  }, []);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -117,13 +139,55 @@ export default function AutozoneCatalog() {
         </div>
       ) : (
         <>
-          <button 
-            className="bg-orange-500 hover:bg-orange-600 text-white font-bold py-3 px-6 rounded-lg transition duration-300"
-            onClick={handleShowIframe}
-          >
-            Browse Autozone Catalog
-          </button>
-          
+          {!showCart ? (
+            <button
+              className="bg-orange-500 hover:bg-orange-600 text-white font-bold py-3 px-6 rounded-lg transition duration-300"
+              onClick={handleShowIframe}
+            >
+              Browse Autozone Catalog
+            </button>
+          ) : (
+            <div className="w-full max-w-6xl mx-auto bg-white rounded-lg shadow-lg p-6">
+              <h3 className="text-2xl font-bold text-gray-800 mb-6">Your Cart Items</h3>
+              <div className="overflow-x-auto">
+                <table className="min-w-full bg-white border border-gray-200">
+                  <thead className="bg-gray-50">
+                    <tr>
+                      <th className="px-6 py-3 border-b border-gray-200 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Image</th>
+                      <th className="px-6 py-3 border-b border-gray-200 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
+                      <th className="px-6 py-3 border-b border-gray-200 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Quantity</th>
+                      <th className="px-6 py-3 border-b border-gray-200 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Fulfillment Method</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {cartItems.map((item, index) => (
+                      <tr key={index} className="hover:bg-gray-50">
+                        <td className="px-6 py-4 border-b border-gray-200">
+                          {item.product?.imageUrl && (
+                            <img 
+                              src={`https:${item.product.imageUrl}`} 
+                              alt={item.product.name || 'Product image'} 
+                              className="h-16 w-16 object-contain"
+                            />
+                          )}
+                        </td>
+                        <td className="px-6 py-4 border-b border-gray-200 text-gray-900">
+                          {item.product?.name}
+                        </td>
+                        <td className="px-6 py-4 border-b border-gray-200 text-gray-900">
+                          {item.quantity}
+                        </td>
+                        <td className="px-6 py-4 border-b border-gray-200 text-gray-900">
+                          {item.fulfillmentMethod}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          )}
+         
           {showIframe && (
             <div className="fixed inset-0 bg-black bg-opacity-50 z-50">
               <div className="absolute inset-0 flex items-center justify-center p-4">
