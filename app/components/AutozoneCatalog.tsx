@@ -56,7 +56,7 @@ export default function AutozoneCatalog() {
     setError(null);
 
     try {
-      const response = await fetch(`https://nextjs-builderio-starter-storefront-demos-flax.vercel.app/api/cross-site-auth`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_AUTOZONE_API_URL}/api/cross-site-auth`, {
         method: 'POST', 
         headers: {
           'Content-Type': 'application/json',
@@ -213,7 +213,7 @@ export default function AutozoneCatalog() {
                     </button>
                   </div>
                   <iframe
-                src="https://nextjs-builderio-starter-storefront-demos-flax.vercel.app"
+                    src={process.env.NEXT_PUBLIC_AUTOZONE_API_URL}
                     className="w-full h-[calc(100%-4rem)] border-0"
                     title="Autozone Catalog"
                   />
